@@ -34,6 +34,21 @@ const createCube = () => {
   return new THREE.Mesh(geometry, material)
 }
 
+const createGlass = () => {
+  const geometry = new THREE.BoxGeometry(110, 110, 110)
+
+  geometry.faces.forEach(face => face.color.setHex(0x000000))
+
+  const material = new THREE.MeshBasicMaterial({
+    vertexColors: THREE.FaceColors,
+    overdraw: 0.5,
+    transparent: true,
+    opacity: 0.15,
+  })
+
+  return new THREE.Mesh(geometry, material)
+}
+
 const createCamera = () => {
   return new THREE.PerspectiveCamera(
     70,
@@ -65,42 +80,47 @@ export default class extends React.Component {
 
     this.shadow = createShadow()
     this.cube = createCube()
+    this.cube2 = createGlass()
     this.camera = createCamera()
     this.scene = createScene([this.shadow, this.cube, this.camera])
     this.renderer = createRenderer()
     this.container = React.createRef()
 
     this.cube.position.y = 100
+    this.cube2.position.y = 100
     this.camera.position.y = 100
     this.camera.position.z = 51
 
-    // anime({
-    //   targets: this.cube.rotation,
-    //   y: Math.PI,
-    // })
-
     setTimeout(() => {
-      anime
-        .timeline()
-        .add({
-          targets: this.camera.position,
-          z: 300,
-          easing: 'easeOutQuad',
-          duration: 500,
-        })
-        .add({
-          targets: [this.shadow.rotation, this.cube.rotation],
-          y: Math.PI / 2,
-          easing: 'easeOutQuad',
-          duration: 500,
-        })
-        .add({
-          targets: this.camera.position,
-          z: 51,
-          easing: 'easeOutQuad',
-          duration: 500,
-          delay: 100,
-        })
+      anime({
+        targets: this.camera.position,
+        z: 300,
+        easing: 'easeOutQuad',
+        duration: 500,
+        complete: () => {
+          anime({
+            targets: [this.shadow.rotation, this.cube.rotation],
+            y: Math.PI / 2,
+            duration: 1000,
+            elasticity: 500,
+          })
+          anime({
+            targets: [this.cube.rotation],
+            x: Math.PI / 2,
+            duration: 1000,
+            elasticity: 500,
+            complete: () => {
+              anime({
+                targets: this.camera.position,
+                z: 51,
+                easing: 'easeOutQuad',
+                duration: 500,
+                delay: 100,
+              })
+            },
+          })
+        },
+      })
     }, 1000)
 
     window.addEventListener('resize', this.onResize)

@@ -1,4 +1,6 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import history from 'connect-history-api-fallback'
+import convert from 'koa-connect'
 
 export default {
   mode: process.env.NODE_ENV || 'development',
@@ -25,4 +27,9 @@ export default {
       title: 'faris.im',
     }),
   ],
+  serve: {
+    add: (app, middleware, options) => {
+      app.use(convert(history({})))
+    },
+  },
 }

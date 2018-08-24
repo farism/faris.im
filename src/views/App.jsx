@@ -17,11 +17,12 @@ export default () => (
     <div className={styles['page']}>
       <BrowserRouter>
         <Switch>
-          <Route path="/" component={Home} />
           <Route path="/about" component={About} />
           <Route path="/articles" component={Articles} />
           <Route path="/projects" component={Projects} />
           <Route path="/resume" component={Resume} />
+          <Route path="/home" component={Home} />
+          <Route path="/" component={Home} />
         </Switch>
       </BrowserRouter>
     </div>
