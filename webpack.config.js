@@ -1,6 +1,6 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
-module.exports = {
+export default {
   mode: process.env.NODE_ENV || 'development',
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -22,6 +22,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/index.html',
+      title: 'faris.im',
     }),
   ],
 }

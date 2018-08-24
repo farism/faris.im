@@ -1,0 +1,12 @@
+.scene {
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+  z-index: 1;
+}
+
+.page {
+  position: relative;
+  z-index: 2;
+}
