@@ -1,8 +1,39 @@
 import React from 'react'
+import { withRouter } from 'react-router'
 import * as THREE from 'three'
-import anime from 'animejs'
+import { TweenLite, TimelineLite, Back } from 'gsap/TweenMax'
 
 import styles from '../styles/scene.scss'
+
+let timeline = null
+
+const pages = {
+  about: {
+    faces: [0, 1],
+    color: 0xffb3ba, //red
+    rotation: [0, -Math.PI / 2],
+  },
+  articles: {
+    faces: [2, 3],
+    color: 0xffdfba, // orange
+    rotation: [0, Math.PI / 2],
+  },
+  projects: {
+    faces: [4, 5],
+    color: 0xffffba, // yellow
+    rotation: [Math.PI / 2, 0],
+  },
+  resume: {
+    faces: [6, 7],
+    color: 0xbaffc9, // green
+    rotation: [-Math.PI / 2, 0],
+  },
+  home: {
+    faces: [8, 9],
+    color: 0xbae1ff, // blue
+    rotation: [0, 0],
+  },
+}
 
 const createShadow = () => {
   const geometry = new THREE.PlaneBufferGeometry(100, 100)
@@ -19,12 +50,11 @@ const createShadow = () => {
 const createCube = () => {
   const geometry = new THREE.BoxGeometry(100, 100, 100)
 
-  for (var i = 0; i < geometry.faces.length; i += 2) {
-    const hex = Math.random() * 0xffffff
-
-    geometry.faces[i].color.setHex(hex)
-    geometry.faces[i + 1].color.setHex(hex)
-  }
+  Object.keys(pages).forEach(page => {
+    pages[page].faces.forEach(face => {
+      geometry.faces[face].color.setHex(pages[page].color)
+    })
+  })
 
   const material = new THREE.MeshBasicMaterial({
     vertexColors: THREE.FaceColors,
@@ -37,7 +67,7 @@ const createCube = () => {
 const createGlass = () => {
   const geometry = new THREE.BoxGeometry(110, 110, 110)
 
-  geometry.faces.forEach(face => face.color.setHex(0x000000))
+  geometry.faces.forEach(face => face.color.setHex(0xffffff))
 
   const material = new THREE.MeshBasicMaterial({
     vertexColors: THREE.FaceColors,
@@ -66,7 +96,7 @@ const createScene = children => {
   return scene
 }
 
-const createRenderer = children => {
+const createRenderer = () => {
   const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
@@ -74,60 +104,47 @@ const createRenderer = children => {
   return renderer
 }
 
-export default class extends React.Component {
+const zoom = (z, duration, targets) =>
+  targets.map(target => TweenLite.to(target, duration, { z }))
+
+const rotateX = (x, targets) =>
+  targets.map(target => TweenLite.to(target, 0.75, { x, ease: Back.easeOut }))
+
+const rotateY = (y, targets) =>
+  targets.map(target => TweenLite.to(target, 0.75, { y, ease: Back.easeOut }))
+
+class Scene extends React.Component {
   constructor(props) {
     super(props)
 
-    this.shadow = createShadow()
-    this.cube = createCube()
-    this.cube2 = createGlass()
-    this.camera = createCamera()
-    this.scene = createScene([this.shadow, this.cube, this.camera])
-    this.renderer = createRenderer()
     this.container = React.createRef()
 
-    this.cube.position.y = 100
-    this.cube2.position.y = 100
-    this.camera.position.y = 100
-    this.camera.position.z = 51
+    const shadow = createShadow()
+    const cube = createCube()
+    const glass = createGlass()
+    const camera = createCamera()
+    const scene = createScene([shadow, cube, glass, camera])
+    const renderer = createRenderer()
 
-    setTimeout(() => {
-      anime({
-        targets: this.camera.position,
-        z: 300,
-        easing: 'easeOutQuad',
-        duration: 500,
-        complete: () => {
-          anime({
-            targets: [this.shadow.rotation, this.cube.rotation],
-            y: Math.PI / 2,
-            duration: 1000,
-            elasticity: 500,
-          })
-          anime({
-            targets: [this.cube.rotation],
-            x: Math.PI / 2,
-            duration: 1000,
-            elasticity: 500,
-            complete: () => {
-              anime({
-                targets: this.camera.position,
-                z: 51,
-                easing: 'easeOutQuad',
-                duration: 500,
-                delay: 100,
-              })
-            },
-          })
-        },
-      })
-    }, 1000)
+    cube.position.y = 100
+    glass.position.y = 100
+    camera.position.y = 100
+    camera.position.z = 300
+
+    this.state = {
+      shadow,
+      cube,
+      glass,
+      camera,
+      scene,
+      renderer,
+    }
 
     window.addEventListener('resize', this.onResize)
   }
 
   componentDidMount() {
-    this.container.current.appendChild(this.renderer.domElement)
+    this.container.current.appendChild(this.state.renderer.domElement)
     this.animate()
   }
 
@@ -135,18 +152,49 @@ export default class extends React.Component {
     window.removeEventListener('resize', this.onResize)
   }
 
+  static getDerivedStateFromProps(props, state) {
+    const page = props.location.pathname.replace('/', '')
+
+    if (!pages[page]) {
+      return state
+    }
+
+    const { cube, glass, shadow, camera } = state
+    const rotationX = pages[page].rotation[0]
+    const rotationY = pages[page].rotation[1]
+    const zoomOut = zoom(300, ((300 - camera.position.z) / 300) * 0.75, [
+      camera.position,
+    ])
+    const rotate = [
+      rotateX(rotationX, [cube.rotation, glass.rotation]),
+      rotateY(rotationY, [cube.rotation, glass.rotation, shadow.rotation]),
+    ]
+    const zoomIn = zoom(51, 0.75, [camera.position])
+
+    timeline && timeline.clear()
+
+    timeline = new TimelineLite()
+      .add(zoomOut)
+      .add(rotate)
+      .add(zoomIn)
+
+    return state
+  }
+
   onResize = () => {
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.camera.aspect = window.innerWidth / window.innerHeight
-    this.camera.updateProjectionMatrix()
+    this.state.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.state.camera.aspect = window.innerWidth / window.innerHeight
+    this.state.camera.updateProjectionMatrix()
   }
 
   animate = () => {
     requestAnimationFrame(this.animate)
-    this.renderer.render(this.scene, this.camera)
+    this.state.renderer.render(this.state.scene, this.state.camera)
   }
 
   render() {
     return <div ref={this.container} className={styles['scene']} id="scene" />
   }
 }
+
+export default withRouter(Scene)

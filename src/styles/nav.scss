@@ -1,0 +1,42 @@
+.nav {
+  ul {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+    padding: 0;
+
+    li {
+      display: inline-flex;
+      margin: 0 15px;
+
+      a {
+        color: #111;
+        font-size: 20px;
+        line-height: 14px;
+        padding: 5px;
+        text-decoration: none;
+        transition: 0.2s color;
+
+        &.active, &:hover {
+          background: black;
+
+          &.about {
+            color: #ffb3ba;
+          }
+          &.articles {
+            color: #ffdfba;
+          }
+          &.projects {
+            color: #ffffba;
+          }
+          &.resume {
+            color: #baffc9;
+          }
+          &.home {
+            color: #bae1ff;
+          }
+        }
+      }
+    }
+  }
+}

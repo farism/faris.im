@@ -30,7 +30,10 @@
     "webpack-serve": "^2.0.2"
   },
   "dependencies": {
+    "@wildpeaks/three-webpack-plugin": "^2.0.0",
     "animejs": "^2.2.0",
+    "gsap": "^2.0.1",
+    "html-webpack-include-assets-plugin": "^1.0.4",
     "normalize.css": "^8.0.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
