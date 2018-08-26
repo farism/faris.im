@@ -1,14 +1,14 @@
 import React from 'react'
 import cx from 'classnames'
 
-import styles from '../styles/about.scss'
+import styles from '../styles/game.scss'
 
 export default ({ isTransitioning }) => (
   <div
-    className={cx(styles['about'], {
+    className={cx(styles['game'], {
       [styles['transitioning']]: isTransitioning,
     })}
   >
-    about
+    game
   </div>
 )

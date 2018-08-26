@@ -1,18 +1,43 @@
-.scene {
-  left: 0;
-  position: fixed;
-  top: 0;
-  z-index: 1;
-}
+.app {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 
-.nav {
-  position: absolute;
-  width: 100%;
-  z-index: 2;
-}
+  .scene {
+    left: 0;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+  }
 
+  .page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 25px;
+    position: relative;
+    transition: 0.5s opacity;
+    z-index: 2;
 
-.page {
-  position: relative;
-  z-index: 3;
+    > * {
+      flex: 1;
+      height: 100%;
+    }
+  }
+
+  .footer {
+    display: flex;
+    flex: 0 0 auto;
+    height: 30px;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .nav {
+    flex: 0 0 auto;
+    position: relative;
+    width: 100%;
+    z-index: 3;
+  }
 }

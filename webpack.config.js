@@ -21,7 +21,11 @@ export default {
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        use: ['style-loader', 'css-loader?modules=true', 'sass-loader'],
+        use: [
+          'style-loader',
+          'css-loader?modules=true&localIdentName=[local]-[hash:base64:5]',
+          'sass-loader',
+        ],
       },
     ],
   },

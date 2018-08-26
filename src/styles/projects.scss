@@ -1,0 +1,67 @@
+.projects {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 1;
+  padding: 50px 0;
+  position: relative;
+  transition: 0.5s all ease-out;
+  transform: translateY(0);
+
+  &.transitioning {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+
+  .content {
+    max-width: 768px;
+  }
+
+  .copy {
+    text-align: justify;
+  }
+
+  ul {
+    list-style: none;
+    margin: 25px 0;
+    padding: 0;
+  }
+
+  li {
+    border: 2px solid #111;
+    padding: 15px 20px;
+    position: relative;
+    transition: 0.2s background, 0.2s transform, 0.2s box-shadow;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+      transform: translateX(2px) translateY(-2px);
+      box-shadow: -2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    + li {
+      margin-top: 15px;
+    }
+
+    .title {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      white-space: nowrap;
+
+      h2 {
+        font-size: 30px;
+        margin: 0;
+      }
+
+      .links {
+        font-size: 16px;
+
+        a + a {
+          margin-left: 15px;
+        }
+      }
+    }
+  }
+}

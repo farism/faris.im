@@ -1,11 +1,9 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import * as THREE from 'three'
-import { TweenLite, TimelineLite, Back } from 'gsap/TweenMax'
+import { TweenLite, TimelineLite, Power2, Back } from 'gsap/TweenMax'
 
 import styles from '../styles/scene.scss'
-
-let timeline = null
 
 const pages = {
   about: {
@@ -32,6 +30,11 @@ const pages = {
     faces: [8, 9],
     color: 0xbae1ff, // blue
     rotation: [0, 0],
+  },
+  game: {
+    faces: [10, 11],
+    color: 0x000000, // game
+    rotation: [0, Math.PI],
   },
 }
 
@@ -97,7 +100,9 @@ const createScene = children => {
 }
 
 const createRenderer = () => {
-  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  const renderer = new THREE.WebGLRenderer({
+    // antialias: true
+  })
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
 
@@ -105,7 +110,9 @@ const createRenderer = () => {
 }
 
 const zoom = (z, duration, targets) =>
-  targets.map(target => TweenLite.to(target, duration, { z }))
+  targets.map(target =>
+    TweenLite.to(target, duration, { z, ease: Power2.easeOut })
+  )
 
 const rotateX = (x, targets) =>
   targets.map(target => TweenLite.to(target, 0.75, { x, ease: Back.easeOut }))
@@ -118,6 +125,7 @@ class Scene extends React.Component {
     super(props)
 
     this.container = React.createRef()
+    this.timeline = null
 
     const shadow = createShadow()
     const cube = createCube()
@@ -145,21 +153,36 @@ class Scene extends React.Component {
 
   componentDidMount() {
     this.container.current.appendChild(this.state.renderer.domElement)
+    this.transition()
     this.animate()
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.location.pathname !== this.props.location.pathname
+  }
+
+  componentDidUpdate() {
+    this.transition()
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize)
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const page = props.location.pathname.replace('/', '')
+  onResize = () => {
+    this.state.renderer.setSize(window.innerWidth, window.innerHeight)
+    this.state.camera.aspect = window.innerWidth / window.innerHeight
+    this.state.camera.updateProjectionMatrix()
+  }
+
+  transition = () => {
+    const page = this.props.location.pathname.replace('/', '')
 
     if (!pages[page]) {
-      return state
+      return
     }
 
-    const { cube, glass, shadow, camera } = state
+    const { cube, glass, shadow, camera } = this.state
     const rotationX = pages[page].rotation[0]
     const rotationY = pages[page].rotation[1]
     const zoomOut = zoom(300, ((300 - camera.position.z) / 300) * 0.75, [
@@ -171,20 +194,19 @@ class Scene extends React.Component {
     ]
     const zoomIn = zoom(51, 0.75, [camera.position])
 
-    timeline && timeline.clear()
+    if (this.timeline) {
+      this.timeline.eventCallback('onComplete', null)
+      this.timeline.clear()
+    }
 
-    timeline = new TimelineLite()
+    this.props.onTransitionBegin()
+
+    this.timeline = new TimelineLite({
+      onComplete: this.props.onTransitionComplete,
+    })
       .add(zoomOut)
       .add(rotate)
       .add(zoomIn)
-
-    return state
-  }
-
-  onResize = () => {
-    this.state.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.state.camera.aspect = window.innerWidth / window.innerHeight
-    this.state.camera.updateProjectionMatrix()
   }
 
   animate = () => {

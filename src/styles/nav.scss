@@ -1,8 +1,15 @@
 .nav {
+  padding: 100px 0 0;
+  width: 100%;
+
+  &.game {
+    display: none;
+  }
+
   ul {
     display: flex;
     justify-content: center;
-    margin-top: 100px;
+    margin: 0;
     padding: 0;
 
     li {
@@ -17,21 +24,31 @@
         text-decoration: none;
         transition: 0.2s color;
 
+        &:active {
+          position: relative;
+          top: 1px;
+          right: 1px;
+        }
+
         &.active, &:hover {
           background: black;
 
           &.about {
             color: #ffb3ba;
           }
+
           &.articles {
             color: #ffdfba;
           }
+
           &.projects {
             color: #ffffba;
           }
+
           &.resume {
             color: #baffc9;
           }
+
           &.home {
             color: #bae1ff;
           }
