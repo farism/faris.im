@@ -7,8 +7,13 @@ import Mousetrap from 'mousetrap'
 
 import styles from '../styles/game.scss'
 import OrbitControls from '../vendor/OrbitControls'
-import Modal, { EASY } from './Modal'
+import Modal from './Modal'
 import Controls from './Controls'
+
+export const EASY = 4
+export const MEDIUM = 8
+export const HARD = 16
+export const INSANE = 24
 
 OrbitControls(THREE)
 

@@ -1,13 +1,9 @@
-import path from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import history from 'connect-history-api-fallback'
 import convert from 'koa-connect'
 
 export default {
   mode: process.env.NODE_ENV || 'development',
-  output: {
-    path: path.resolve(__dirname, 'assets'),
-  },
   resolve: {
     extensions: ['.js', '.jsx'],
   },

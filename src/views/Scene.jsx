@@ -115,10 +115,10 @@ const zoom = (z, duration, targets) =>
   )
 
 const rotateX = (x, targets) =>
-  targets.map(target => TweenLite.to(target, 0.75, { x, ease: Back.easeOut }))
+  targets.map(target => TweenLite.to(target, 0.5, { x, ease: Back.easeOut }))
 
 const rotateY = (y, targets) =>
-  targets.map(target => TweenLite.to(target, 0.75, { y, ease: Back.easeOut }))
+  targets.map(target => TweenLite.to(target, 0.5, { y, ease: Back.easeOut }))
 
 class Scene extends React.Component {
   constructor(props) {
@@ -185,14 +185,14 @@ class Scene extends React.Component {
     const { cube, glass, shadow, camera } = this.state
     const rotationX = pages[page].rotation[0]
     const rotationY = pages[page].rotation[1]
-    const zoomOut = zoom(300, ((300 - camera.position.z) / 300) * 0.75, [
+    const zoomOut = zoom(300, ((300 - camera.position.z) / 300) * 0.5, [
       camera.position,
     ])
     const rotate = [
       rotateX(rotationX, [cube.rotation, glass.rotation]),
       rotateY(rotationY, [cube.rotation, glass.rotation, shadow.rotation]),
     ]
-    const zoomIn = zoom(51, 0.75, [camera.position])
+    const zoomIn = zoom(51, 0.5, [camera.position])
 
     if (this.timeline) {
       this.timeline.eventCallback('onComplete', null)

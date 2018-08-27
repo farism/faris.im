@@ -3,11 +3,7 @@ import { NavLink } from 'react-router-dom'
 import cx from 'classnames'
 
 import styles from '../styles/modal.scss'
-
-export const EASY = 4
-export const MEDIUM = 8
-export const HARD = 16
-export const INSANE = 32
+import { EASY, MEDIUM, HARD, INSANE } from './Game'
 
 const Checkbox = ({ label, difficulty, value, onChange }) => (
   <label>
