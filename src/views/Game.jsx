@@ -63,12 +63,10 @@ const creatFloor = cubes => {
 
 const createPlayer = () => {
   const geometry = new THREE.BoxGeometry(1, 0.5, 1)
-
   const material = new THREE.MeshLambertMaterial({
     color: 0xff6600,
     overdraw: 0.5,
   })
-
   const player = new THREE.Mesh(geometry, material)
   player.position.set(0, -0.25, 2)
 
@@ -77,7 +75,6 @@ const createPlayer = () => {
 
 const createCube = (height = 1, opacity = 1, color = 0xffffff) => {
   const geometry = new THREE.BoxGeometry(1, height, 1)
-
   const material = new THREE.MeshLambertMaterial({
     color,
     opacity,
@@ -210,8 +207,8 @@ export default class extends React.Component {
     this.renderer = createRenderer()
     this.orbit = createOrbit(this.camera, this.renderer)
 
-    window.addEventListener('resize', this.onResize)
     this.orbit.addEventListener('change', this.animate)
+    window.addEventListener('resize', this.onResize)
     Mousetrap.bind(
       ['w', 's', 'a', 'd', 'up', 'down', 'left', 'right'],
       this.move

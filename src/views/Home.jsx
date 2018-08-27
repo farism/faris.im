@@ -9,6 +9,6 @@ export default ({ isTransitioning }) => (
       [styles['transitioning']]: isTransitioning,
     })}
   >
-    home
+    welcome
   </div>
 )

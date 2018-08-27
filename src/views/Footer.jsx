@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router'
 import { NavLink } from 'react-router-dom'
 import cx from 'classnames'
 
