@@ -618,7 +618,7 @@ export default THREE => {
     function onMouseDown(event) {
       if (scope.enabled === false) return
 
-      event.preventDefault()
+      // event.preventDefault()
 
       switch (event.button) {
         // case scope.mouseButtons.LEFT:

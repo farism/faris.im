@@ -1,7 +1,7 @@
 .modal {
   align-items: center;
   background: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
   color: black;
   display: flex;
   flex-direction: column;
@@ -40,32 +40,36 @@
       display: none;
 
       + span {
-        display: flex;
-        width: 20px;
-        height: 20px;
         background: black;
         border-radius: 100%;
-        margin-right: 10px;
+        display: flex;
+        height: 20px;
         line-height: 0;
+        margin-right: 10px;
+        position: relative;
+        width: 20px;
 
         &::after {
           background: white;
+          border-radius: 100%;
           content: '';
           display: flex;
-          width: 14px;
-          height: 14px;
-          border-radius: 100%;
-          position: relative;
-          top: 3px;
-          left: 3px;
+          height: 16px;
+          left: 2px;
+          position: absolute;
+          top: 2px;
+          width: 16px;
         }
       }
 
       &:checked {
         + span {
-
           &::after {
-            background: black;
+            background: white;
+            height: 8px;
+            left: 6px;
+            top: 6px;
+            width: 8px;
           }
         }
       }

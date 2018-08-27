@@ -1,7 +1,17 @@
 import React from 'react'
-import Mousetrap from 'mousetrap'
 
 import styles from '../styles/controls.scss'
+
+const GODMODES = [
+  'iddqd',
+  'idkfa',
+  'poweroverwhelming',
+  'waraintwhatitusedtobe',
+  'tooktheredpill',
+]
+
+const check = code =>
+  GODMODES.some(val => code.replace(/\s/g, '').toLowerCase() === val)
 
 export default ({ onGodmode }) => (
   <div className={styles['controls']}>
@@ -11,12 +21,16 @@ export default ({ onGodmode }) => (
     <span>mouse wheel - zoom</span>
     <input
       onKeyPress={e => {
-        if (
-          e.key === 'Enter' &&
-          e.target.value.replace(' ', '').toLowerCase() === 'poweroverwhelming'
-        ) {
+        console.log(e.key)
+        if (e.key === 'Enter' && check(e.target.value)) {
           onGodmode()
           e.target.value = ''
+          e.target.blur()
+        }
+      }}
+      onKeyDown={e => {
+        if (e.key === 'Escape') {
+          e.target.blur()
         }
       }}
       placeholder="enter godmode code"
