@@ -68,10 +68,7 @@ const creatFloor = cubes => {
 
 const createPlayer = () => {
   const geometry = new THREE.BoxGeometry(1, 0.5, 1)
-  const material = new THREE.MeshLambertMaterial({
-    color: 0xff6600,
-    overdraw: 0.5,
-  })
+  const material = new THREE.MeshLambertMaterial({ color: 0xff6600 })
   const player = new THREE.Mesh(geometry, material)
   player.position.set(0, -0.25, 2)
 
@@ -84,7 +81,6 @@ const createCube = (height = 1, opacity = 1, color = 0xffffff) => {
     color,
     opacity,
     transparent: true,
-    overdraw: 0.5,
   })
 
   return new THREE.Mesh(geometry, material)
@@ -140,10 +136,21 @@ const createLight = () => {
   return light
 }
 
-const createCamera = () => {
+const createMovingCamera = () => {
   const frustum = createFrustrum()
+  const camera = new THREE.OrthographicCamera(...frustum, 0.1, 3000)
 
-  return new THREE.OrthographicCamera(...frustum, 0.1, 3000)
+  return camera
+}
+
+const createFixedCamera = () => {
+  const aspect = window.innerWidth / window.innerHeight
+  const frustum = [aspect * 0.5, aspect * -0.5, -0.5, 0.5]
+  const camera = new THREE.OrthographicCamera(...frustum, 0.1, 3000)
+  camera.zoom = 0.01
+  camera.position.y = 50
+
+  return camera
 }
 
 const createOrbit = (camera, renderer) => {
@@ -166,7 +173,7 @@ const createScene = children => {
 
 const createRenderer = () => {
   const renderer = new THREE.WebGLRenderer({
-    // antialias: true
+    antialias: window.devicePixelRation < 2,
   })
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
@@ -186,8 +193,9 @@ export default class extends React.Component {
     super(props)
 
     this.state = {
-      won: false,
       difficulty: EASY,
+      useFixedCamera: false,
+      won: false,
     }
 
     this.container = React.createRef()
@@ -196,7 +204,8 @@ export default class extends React.Component {
     this.walls = createWalls(this.map.matrix)
     this.solution = createSolution(this.map.solution)
     this.floor = creatFloor(this.walls)
-    this.camera = createCamera()
+    this.camera = createMovingCamera()
+    this.cameraFixed = createFixedCamera()
     this.ambient = new THREE.AmbientLight(0x33333)
     this.light1 = createLight()
     this.light2 = createLight()
@@ -224,6 +233,7 @@ export default class extends React.Component {
   componentDidMount() {
     this.container.current.appendChild(this.renderer.domElement)
     this.resetCamera()
+    this.resetFixedCamera()
     this.animate()
   }
 
@@ -281,6 +291,7 @@ export default class extends React.Component {
 
     this.checkWin()
     this.resetCamera()
+    this.resetFixedCamera()
     this.animate()
   }
 
@@ -320,6 +331,14 @@ export default class extends React.Component {
     this.camera.updateProjectionMatrix()
   }
 
+  resetFixedCamera = () => {
+    this.cameraFixed.position.x = -50
+    this.cameraFixed.position.y = 50
+    this.cameraFixed.position.z = -50
+    this.cameraFixed.lookAt(this.player.position)
+    this.cameraFixed.updateProjectionMatrix()
+  }
+
   reset = () => {
     this.setState({ won: false })
     this.scene.remove(this.walls)
@@ -331,11 +350,15 @@ export default class extends React.Component {
     this.scene.add(this.walls)
     this.scene.add(this.solution)
     this.resetCamera()
+    this.resetFixedCamera()
     this.animate()
   }
 
   animate = () => {
-    this.renderer.render(this.scene, this.camera)
+    this.renderer.render(
+      this.scene,
+      this.useFixedCamera ? this.cameraFixed : this.camera
+    )
   }
 
   render() {

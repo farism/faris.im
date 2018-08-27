@@ -2,8 +2,12 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import * as THREE from 'three'
 import { TweenLite, TimelineLite, Power2, Back } from 'gsap/TweenMax'
+import { MazeGenerator } from 'maze-es6-solver'
 
 import styles from '../styles/scene.scss'
+
+const ROTATE_SPEED = 0.5
+const ZOOM_SPEED = 0.5
 
 const pages = {
   about: {
@@ -44,7 +48,6 @@ const createShadow = () => {
 
   const material = new THREE.MeshBasicMaterial({
     color: 0xbbbbbb,
-    overdraw: 0.5,
   })
 
   return new THREE.Mesh(geometry, material)
@@ -59,25 +62,39 @@ const createCube = () => {
     })
   })
 
-  const material = new THREE.MeshBasicMaterial({
-    vertexColors: THREE.FaceColors,
-    overdraw: 0.5,
-  })
+  const cube = new THREE.Mesh(
+    geometry,
+    new THREE.MeshBasicMaterial({ vertexColors: THREE.FaceColors })
+  )
 
-  return new THREE.Mesh(geometry, material)
+  const indicator = createGameIndicator()
+  indicator.position.set(25, 25, -51)
+
+  const group = new THREE.Group()
+  group.add(cube)
+  group.add(indicator)
+
+  return group
+}
+
+const createGameIndicator = () => {
+  const indicator = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: 0xffff00 })
+  )
+
+  return indicator
 }
 
 const createGlass = () => {
   const geometry = new THREE.BoxGeometry(110, 110, 110)
-
-  geometry.faces.forEach(face => face.color.setHex(0xffffff))
-
   const material = new THREE.MeshBasicMaterial({
     vertexColors: THREE.FaceColors,
-    overdraw: 0.5,
     transparent: true,
     opacity: 0.15,
   })
+
+  geometry.faces.forEach(face => face.color.setHex(0xffffff))
 
   return new THREE.Mesh(geometry, material)
 }
@@ -101,7 +118,7 @@ const createScene = children => {
 
 const createRenderer = () => {
   const renderer = new THREE.WebGLRenderer({
-    // antialias: true
+    antialias: window.devicePixelRation < 2,
   })
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
@@ -109,16 +126,15 @@ const createRenderer = () => {
   return renderer
 }
 
-const zoom = (z, duration, targets) =>
+const rotateX = (x, targets) =>
   targets.map(target =>
-    TweenLite.to(target, duration, { z, ease: Power2.easeOut })
+    TweenLite.to(target, ROTATE_SPEED, { x, ease: Back.easeOut })
   )
 
-const rotateX = (x, targets) =>
-  targets.map(target => TweenLite.to(target, 0.5, { x, ease: Back.easeOut }))
-
 const rotateY = (y, targets) =>
-  targets.map(target => TweenLite.to(target, 0.5, { y, ease: Back.easeOut }))
+  targets.map(target =>
+    TweenLite.to(target, ROTATE_SPEED, { y, ease: Back.easeOut })
+  )
 
 class Scene extends React.Component {
   constructor(props) {
@@ -185,14 +201,20 @@ class Scene extends React.Component {
     const { cube, glass, shadow, camera } = this.state
     const rotationX = pages[page].rotation[0]
     const rotationY = pages[page].rotation[1]
-    const zoomOut = zoom(300, ((300 - camera.position.z) / 300) * 0.5, [
-      camera.position,
-    ])
+
     const rotate = [
       rotateX(rotationX, [cube.rotation, glass.rotation]),
       rotateY(rotationY, [cube.rotation, glass.rotation, shadow.rotation]),
     ]
-    const zoomIn = zoom(51, 0.5, [camera.position])
+    const zoomOut = TweenLite.to(
+      camera.position,
+      ((300 - camera.position.z) / 300) * ZOOM_SPEED,
+      { z: 300, ease: Power2.easeOut }
+    )
+    const zoomIn = TweenLite.to(camera.position, ZOOM_SPEED, {
+      z: 51,
+      ease: Power2.easeOut,
+    })
 
     if (this.timeline) {
       this.timeline.eventCallback('onComplete', null)
@@ -211,7 +233,6 @@ class Scene extends React.Component {
   }
 
   animate = () => {
-    // requestAnimationFrame(this.animate)
     this.state.renderer.render(this.state.scene, this.state.camera)
   }
 

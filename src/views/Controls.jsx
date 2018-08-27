@@ -21,7 +21,6 @@ export default ({ onGodmode }) => (
     <span>mouse wheel - zoom</span>
     <input
       onKeyPress={e => {
-        console.log(e.key)
         if (e.key === 'Enter' && check(e.target.value)) {
           onGodmode()
           e.target.value = ''
