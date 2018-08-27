@@ -21,9 +21,11 @@
   a {
     color:#666;
     text-decoration: none;
+    cursor: pointer;
 
     &:hover {
       text-decoration: underline;
+      color: #999;
     }
   }
 }

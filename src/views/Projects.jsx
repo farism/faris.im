@@ -147,7 +147,7 @@ export default ({ isTransitioning }) => (
       </div>
       <ul>
         {projects.map(project => (
-          <li>
+          <li key={project.name}>
             <div className={styles['title']}>
               <h2>{project.name}</h2>
               <div className={styles['links']}>

@@ -10,9 +10,9 @@ export default () => (
     className={cx(styles['footer'], styles[location.pathname.replace('/', '')])}
   >
     ©{new Date().getFullYear()} Faris Mustafa{' '}
-    <NavLink to="/home">[Back To Home]</NavLink>
+    <NavLink to="/home">[back to home]</NavLink>
     <a href="https://github.com/farism/faris.im" target="_blank">
-      [View Source]
+      [view source]
     </a>
   </footer>
 )

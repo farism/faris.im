@@ -35,7 +35,7 @@
     transition: 0.2s background, 0.2s transform, 0.2s box-shadow;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.05);
+      background: rgba(255, 255, 255, 0.25);
       transform: translateX(2px) translateY(-2px);
       box-shadow: -2px 2px 5px rgba(0,0,0,0.2);
     }

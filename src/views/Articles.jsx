@@ -10,6 +10,6 @@ export default ({ isTransitioning }) => (
     })}
   >
     hopefully this page being here will motivate me to finally compile some
-    articles!
+    articles
   </div>
 )

@@ -12,6 +12,7 @@ import Nav from './Nav'
 import Projects from './Projects'
 import Resume from './Resume'
 import Scene from './Scene'
+import Controls from './Controls'
 
 export default class extends React.Component {
   constructor(props) {

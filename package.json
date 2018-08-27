@@ -31,9 +31,12 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
+    "generate-maze": "^0.2.0",
     "gsap": "^2.0.1",
+    "maze-es6-solver": "^1.0.3",
     "mousetrap": "^1.6.2",
     "normalize.css": "^8.0.0",
+    "pathfinding": "^0.4.18",
     "react": "^16.4.2",
     "react-clipboard.js": "^2.0.0",
     "react-dom": "^16.4.2",
@@ -41,6 +44,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "recompose": "^0.28.2",
-    "three": "^0.95.0"
+    "three": "^0.95.0",
+    "three-orbitcontrols": "^2.1.2"
   }
 }

@@ -22,12 +22,9 @@ class Nav extends React.Component {
   constructor(props) {
     super(props)
 
-    Mousetrap.bind(
-      'up up down down left right left right b a enter',
-      function() {
-        props.history.push('/game')
-      }
-    )
+    Mousetrap.bind('up up down down left right left right b a enter', () => {
+      props.history.push('/game')
+    })
   }
 
   render() {
@@ -45,6 +42,7 @@ class Nav extends React.Component {
           <Link path="projects" />
           <Link path="resume" />
           <Link path="game" />
+          <Link style={{ display: 'none' }} path="game" />
         </ul>
       </nav>
     )

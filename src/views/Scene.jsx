@@ -202,6 +202,7 @@ class Scene extends React.Component {
     this.props.onTransitionBegin()
 
     this.timeline = new TimelineLite({
+      onUpdate: this.animate,
       onComplete: this.props.onTransitionComplete,
     })
       .add(zoomOut)
@@ -210,7 +211,7 @@ class Scene extends React.Component {
   }
 
   animate = () => {
-    requestAnimationFrame(this.animate)
+    // requestAnimationFrame(this.animate)
     this.state.renderer.render(this.state.scene, this.state.camera)
   }
 

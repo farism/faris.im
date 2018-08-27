@@ -1,16 +1,14 @@
 .game {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  height: 100%;
+  left: 0;
   opacity: 1;
-  position: relative;
-  text-align: center;
-  transition: 0.5s all ease-out;
-  transform: translateY(0);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  transition: 0.3s opacity;
 
   &.transitioning {
     opacity: 0;
-    transform: translateY(25px);
   }
 }
+
