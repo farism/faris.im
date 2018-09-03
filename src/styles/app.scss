@@ -41,3 +41,11 @@
     z-index: 3;
   }
 }
+
+@media only screen and (max-width: 640px), (max-device-width: 640px) {
+  .app {
+    .nav {
+      flex: 0 1 auto;
+    }
+  }
+}

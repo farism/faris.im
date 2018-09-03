@@ -42,7 +42,6 @@ class Nav extends React.Component {
           <Link path="projects" />
           <Link path="resume" />
           <Link path="game" />
-          <Link style={{ display: 'none' }} path="game" />
         </ul>
       </nav>
     )

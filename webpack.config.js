@@ -4,6 +4,9 @@ import convert from 'koa-connect'
 
 export default {
   mode: process.env.NODE_ENV || 'development',
+  output: {
+    filename: '[name].[hash].bundle.js',
+  },
   resolve: {
     extensions: ['.js', '.jsx'],
   },

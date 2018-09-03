@@ -19,6 +19,14 @@
       display: inline-flex;
       margin: 0 15px;
 
+      &:first-child {
+        margin-left: none;
+      }
+
+      &:last-child {
+        margin-right: none;
+      }
+
       a {
         color: #111;
         font-size: 20px;
@@ -55,6 +63,24 @@
           &.home {
             color: #bae1ff;
           }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 640px), (max-device-width: 640px) {
+  .nav {
+    padding-top: 30px;
+
+    ul {
+      flex-direction: column;
+
+      li {
+        margin: 0 20px;
+
+        &:last-child {
+          display: none;
         }
       }
     }

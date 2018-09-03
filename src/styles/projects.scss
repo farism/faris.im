@@ -48,7 +48,6 @@
       align-items: center;
       display: flex;
       justify-content: space-between;
-      white-space: nowrap;
 
       h2 {
         font-size: 30px;
@@ -57,9 +56,30 @@
 
       .links {
         font-size: 16px;
+        white-space: nowrap;
 
         a + a {
           margin-left: 15px;
+        }
+      }
+    }
+  }
+}
+
+
+@media only screen and (max-width: 640px), (max-device-width: 640px) {
+  .projects {
+    .copy {
+      text-align: left;
+    }
+
+    li {
+      .title {
+        align-items: flex-start;
+        flex-direction: column;
+
+        .links {
+          margin-top: 10px;
         }
       }
     }

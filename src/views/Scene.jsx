@@ -189,6 +189,7 @@ class Scene extends React.Component {
     this.state.renderer.setSize(window.innerWidth, window.innerHeight)
     this.state.camera.aspect = window.innerWidth / window.innerHeight
     this.state.camera.updateProjectionMatrix()
+    this.animate();
   }
 
   transition = () => {
