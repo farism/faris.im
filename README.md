@@ -1,7 +1,1 @@
-About
-Resume
-Projects
-Blog
-
-github
-discord
+My profile site
