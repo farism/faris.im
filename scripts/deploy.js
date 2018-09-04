@@ -1,39 +1,35 @@
-const { exec } = require('execa-pro')
+const execa = require('execa')
 const path = require('path')
+
+const TMP = 'gh-pages-tmp'
 
 async function deploy() {
   console.log('Starting deployment...\n')
 
   try {
-    const origincmd = await exec('git config remote.origin.url')
-    const origin = origincmd[0].stdout
+    const cwd = path.resolve(process.cwd(), TMP)
+    const opts = { cwd, stdio: 'inherit' }
 
-    console.log(`Using origin: ${origin}\n`)
+    const origin = await execa('git', ['config', 'remote.origin.url'])
 
-    console.log(`Creating temp folder at: ./gh-pages-branch\n`)
+    console.log(`Using origin: ${origin.stdout}\n`)
 
-    await exec(['pwd', 'mkdir -p gh-pages-branch'], {
-      stdio: 'inherit',
-    })
+    console.log(`Creating temp folder at: ./${TMP}\n`)
 
-    await exec(
-      [
-        'git init',
-        `git remote add --fetch origin ${origin}`,
-        'git checkout --orphan gh-pages',
-        'cp -a ../dist/. .',
-        'cp -a ../src/404.html .',
-        'git add --all',
-        'git commit --allow-empty -m "Publish to GitHub pages [ci skip]"',
-        'git push --force --quiet origin gh-pages',
-      ],
-      {
-        stdio: 'inherit',
-        cwd: path.resolve(process.cwd(), 'gh-pages-branch'),
-      }
-    )
-
-    // await exec('rm -rf gh-pages-branch')
+    await execa('rm', ['-rf', TMP])
+    await execa('mkdir', ['-p', TMP])
+    await execa('git', ['init'], opts)
+    await execa('git', ['remote', 'add', 'origin', origin.stdout], opts)
+    await execa('git', ['fetch', 'origin', 'gh-pages'], opts)
+    await execa('git', ['checkout', 'gh-pages'], opts)
+    await execa('rm', ['-f', 'main.*.js'], opts)
+    await execa('cp', ['-a', '../dist/.', '.'], opts)
+    await execa('git', ['add', '--all'], opts)
+    try {
+      await execa('git', ['commit', '-m', '"Publish to gh-pages"'], { cwd })
+    } catch (e) {}
+    await execa('git', ['push', '--quiet', 'origin', 'gh-pages'], opts)
+    await execa('rm', ['-rf', TMP])
   } catch (e) {
     console.log('Failed deployment!')
     console.error(e)
